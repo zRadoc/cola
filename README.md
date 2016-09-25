@@ -88,7 +88,7 @@ qux = [1, 2, 3]
 $ ./run -b --qux "4, 5, 6, 7"
 --bar or -b is passed!
 baz = 42
-qux = [14, 5, 6, 7]
+qux = [4, 5, 6, 7]
 ```
 
 For more details, see public member functions of class `cola::parser` and class `cola::parser::option` in `cola.hpp`, and see `test` directory.

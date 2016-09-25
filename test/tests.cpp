@@ -258,7 +258,7 @@ void test_rest_arg()
     parser.define("c", "C for cat");
 
     const char* argv[] = {
-        "./run", "-a", "-b", "--abc", "-d", "-c", "target.dat"
+        "./run", "-a", "-b", "--abc", "-d", "-c", "target.dat", "with-dash-arg"
     };
     int argc = sizeof(argv) / sizeof(argv[0]);
 
@@ -267,6 +267,7 @@ void test_rest_arg()
     assert(parser.rest_args()[0] == "--abc");
     assert(parser.rest_args()[1] == "-d");
     assert(parser.rest_args()[2] == "target.dat");
+    assert(parser.rest_args()[3] == "with-dash-arg");
 
     std::cout << "\033[34m[[[ test_rest_arg() PASSED ]]]\033[m" << std::endl;
 }
