@@ -274,38 +274,45 @@ void test_rest_arg()
 
 
 
-void usage_example()
+void usage_example(int argc, char* argv[])
 {
     cola::parser parser;
 
-parser.define("output", "output file")
-      .alias('o')
-      .with_arg<std::string>("output.dat");
+    parser.define("output", "output file")
+          .alias('o')
+          .with_arg<std::string>("output.dat");
 
-parser.define("test-cases", "test cases to run")
-      .alias('t')
-      .with_arg_vector<int>("1, 2, 3");
+    parser.define("test-cases", "test cases to run")
+          .alias('t')
+          .with_arg_vector<int>("1, 2, 3");
 
-parser.define("optimize-level", "optimization level")
-      .alias('O')
-      .with_arg<int>(0);
+    parser.define("optimize-level", "optimization level")
+          .alias('O')
+          .with_arg<int>(0);
 
-parser.define("debug-level", "debug level")
-      .alias('d')
-      .with_arg<int>(0);
+    parser.define("debug-level", "debug level")
+          .alias('d')
+          .with_arg<int>(0);
 
-parser.define("dry-run", "enable dry run mode");
+    parser.define("dry-run", "enable dry run mode");
 
-parser.define("version", "print version and exit")
-      .alias('v')
-      .alias('V');
+    parser.define("version", "print version and exit")
+          .alias('v')
+          .alias('V');
 
-parser.define("help", "print this text and exit")
-      .alias('h');
+    parser.define("help", "print this text and exit")
+          .alias('h');
 
-    const char* argv[] = { "./run" };
-    int argc = sizeof(argv) / sizeof(argv[0]);
+    parser.define("hidden", "this is hidden option")
+          .hidden();
+
     parser.parse(argc, argv);
+
+    if(parser.is_passed("hidden")) {
+        std::cout << "+++++++++++++++++++\n"
+                     "--hidden is passed!\n"
+                     "+++++++++++++++++++\n" << std::endl;
+    }
 
     std::cerr << "== USAGE EXAMPLE =================================================================\n";
     parser.easy_usage("test program for cola.", std::cerr);

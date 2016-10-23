@@ -235,6 +235,11 @@ public:
      */
     option& delimiter(char d);
 
+    /**
+     *  Hide this option from usage.
+     */
+    option& hidden();
+
 private:
     typedef svector name_container;
 
@@ -271,6 +276,7 @@ private:
     name_container names_;  // contains '--', '-'
     string default_value_;
     char delim_; // delimiter to parse vector
+    bool hidden_;
 };
 
 class logic_error: public std::logic_error
@@ -426,6 +432,8 @@ inline string parser::descriptions(const string& offset) const
         const option& opt = **it;
         const svector& names = opt.names_;
 
+        if(opt.hidden_) continue;
+
         oss << offset << names[0];
         if(names.size() >= 2) oss << " (";
         for(svector::const_iterator it = names.begin()+1; it != names.end(); ++it) {
@@ -450,6 +458,9 @@ inline string parser::descriptions(const string& offset) const
     it = options_.begin();
     for(; it!=options_.end(); ++it) {
         const option& opt = **it;
+
+        if(opt.hidden_) continue;
+
         oss << std::left << std::setw(max_width) << optheads[i]
             << " | " << opt.description_;
         if(opt.has_arg()) {
@@ -1025,6 +1036,12 @@ inline parser::option& parser::option::delimiter(char d)
     return *this;
 }
 
+inline parser::option& parser::option::hidden()
+{
+    hidden_ = true;
+    return *this;
+}
+
 // private -----------------------------------------------------------------------------------
 // ctor -----------------------------------------------------------------------------------
 inline parser::option::option(const string& name, const string& description, parser& mother):
@@ -1033,7 +1050,8 @@ inline parser::option::option(const string& name, const string& description, par
     value_s_(NULL),
     is_passed_(false),
     description_(description),
-    delim_(',')
+    delim_(','),
+    hidden_(false)
 {
     alias(name);
 }
@@ -1044,7 +1062,8 @@ inline parser::option::option(char name, const string& description, parser& moth
     value_s_(NULL),
     is_passed_(false),
     description_(description),
-    delim_(',')
+    delim_(','),
+    hidden_(false)
 {
     alias(name);
 }
