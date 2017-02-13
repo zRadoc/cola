@@ -273,6 +273,53 @@ void test_rest_arg()
 }
 
 
+void test_undefined_options()
+{
+    cola::parser parser;
+
+    parser.define("a", "A for ant");
+    parser.define("b", "B for bat");
+    parser.define("c", "C for cat");
+
+    {
+        parser.reset();
+        const char* argv[] = {
+            "./run", "-a", "-b", "-c"
+        };
+        int argc = sizeof(argv) / sizeof(argv[0]);
+
+        parser.parse(argc, argv);
+
+        assert(!parser.exists_undefined_options());
+    }
+
+    {
+        parser.reset();
+        const char* argv[] = {
+            "./run", "-a", "-b", "-c", "-d"
+        };
+        int argc = sizeof(argv) / sizeof(argv[0]);
+
+        parser.parse(argc, argv);
+
+        assert(parser.exists_undefined_options());
+    }
+
+    {
+        parser.reset();
+        const char* argv[] = {
+            "./run", "-a", "-b", "-c", "--undefined"
+        };
+        int argc = sizeof(argv) / sizeof(argv[0]);
+
+        parser.parse(argc, argv);
+
+        assert(parser.exists_undefined_options());
+    }
+
+    std::cout << "\033[34m[[[ test_undefined_options() PASSED ]]]\033[m" << std::endl;
+}
+
 
 void usage_example(int argc, char* argv[])
 {

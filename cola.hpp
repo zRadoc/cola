@@ -123,6 +123,12 @@ public:
      */
     void reset();
 
+    /**
+     *  True when there are undefined long or short options
+     *  in parsed argv.
+     */
+    bool exists_undefined_options() const;
+
 private:
     enum argument_type
     {
@@ -189,6 +195,7 @@ private:
     option_container options_;
     option_map       lookup_;
     bool             parsed_;
+    bool             exists_undefined_;
 };
 
 /**
@@ -294,7 +301,7 @@ public:
 // parser ------------------------------------------------------------------------------------
 // ctor/dtor ---------------------------------------------------------------------------------
 inline parser::parser():
-    parsed_(false)
+    parsed_(false), exists_undefined_(false)
 {
 }
 
@@ -504,6 +511,11 @@ inline void parser::reset()
     parsed_ = false;
 }
 
+inline bool parser::exists_undefined_options() const
+{
+    return exists_undefined_;
+}
+
 
 // private --------------------------------------------------------------------------------------------
 // get option -----------------------------------------------------------------------------------------
@@ -639,6 +651,7 @@ inline void parser::eval_short_option(svector::iterator& it, svector::iterator e
     const char c = arg[1];     // after '-'
 
     if(!is_defined(c)) {
+        exists_undefined_ = true;
         rest_args_.push_back(arg);
         return;
     }
@@ -686,6 +699,7 @@ inline void parser::eval_long_option(svector::iterator& it, svector::iterator en
     const string name(arg.begin()+2, arg.end());
 
     if(!is_defined(name)) {
+        exists_undefined_ = true;
         rest_args_.push_back(arg);
         return;
     }
@@ -710,6 +724,7 @@ inline void parser::eval_long_param_option(svector::iterator& it, svector::itera
     const string name(arg.begin()+2, arg.begin()+pos);
     
     if(!is_defined(name)) {
+        exists_undefined_ = true;
         rest_args_.push_back(arg);
         return;
     }
